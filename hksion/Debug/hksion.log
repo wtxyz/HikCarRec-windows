@@ -1,0 +1,3 @@
+﻿  pch.cpp
+  hksion.cpp
+c:\users\wentu\source\repos\hksion\hksion\hksion.cpp(30): fatal error C1083: Cannot open include file: 'HCNetSDK.h': No such file or directory
