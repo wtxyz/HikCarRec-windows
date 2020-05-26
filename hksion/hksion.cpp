@@ -10,7 +10,7 @@
 #include "Windows.h"
 #include "HCNetSDK.h"
 #include <time.h>
-#include <conio.h>//getch()º¯ÊıÓÃ
+#include <conio.h>//getch()å‡½æ•°ç”¨
 
 #pragma comment(lib,"HCNetSDK.lib")
 #pragma comment(lib,"PlayCtrl.lib")
@@ -20,52 +20,52 @@
 using namespace std;
 
 
-//²ÎÊıÉùÃ÷
-int iNum = 0; 	//Í¼Æ¬Ãû³ÆĞòºÅ
-LONG IUserID;	//ÉãÏñ»úÉè±¸
-LONG IHandle = -1;//±¨¾¯²¼·À/³··À;
-NET_DVR_DEVICEINFO_V30 struDeviceInfo;	//Éè±¸ĞÅÏ¢
+//å‚æ•°å£°æ˜
+int iNum = 0; 	//å›¾ç‰‡åç§°åºå·
+LONG IUserID;	//æ‘„åƒæœºè®¾å¤‡
+LONG IHandle = -1;//æŠ¥è­¦å¸ƒé˜²/æ’¤é˜²;
+NET_DVR_DEVICEINFO_V30 struDeviceInfo;	//è®¾å¤‡ä¿¡æ¯
 
 
-char sDVRIP[20]="192.168.2.103";	//×¥ÅÄÉãÏñ»úÉè±¸IPµØÖ·
-short wDVRPort = 8000;	//Éè±¸¶Ë¿ÚºÅ
-char sUserName[20]="admin";	//µÇÂ¼µÄÓÃ»§Ãû
-char sPassword[20]="wentuo2020";	//ÓÃ»§ÃÜÂë
-string carNum;//³µÅÆºÅ							
-string LineByLine;//ÖğĞĞ¶ÁÈ¡ÎÄ¼ş 
+char sDVRIP[20]="192.168.2.103";	//æŠ“æ‹æ‘„åƒæœºè®¾å¤‡IPåœ°å€
+short wDVRPort = 8000;	//è®¾å¤‡ç«¯å£å·
+char sUserName[20]="admin";	//ç™»å½•çš„ç”¨æˆ·å
+char sPassword[20]="password";	//ç”¨æˆ·å¯†ç 
+string carNum;//è½¦ç‰Œå·							
+string LineByLine;//é€è¡Œè¯»å–æ–‡ä»¶ 
 char logPath[20] = "D:\\sdklog\\";
 
 
 				  //---------------------------------------------------------------------------------
-				  //º¯ÊıÉùÃ÷
-void Init();//³õÊ¼»¯
-void Demo_SDK_Version(); //»ñÈ¡sdk°æ±¾
-void Connect();//ÉèÖÃÁ¬½ÓÊÂ¼şÓëÖØÁ¬Ê±¼ä
-void Htime();//»ñÈ¡º£¿µÍşÊÓÉè±¸Ê±¼ä
-bool Login(/*char *sDVRIP, short wDVRPort, char *sUserName, char *sPassword*/);//×¢²áÉãÏñ»úÉè±¸
-void CALLBACK MSesGCallback(LONG ICommand, NET_DVR_ALARMER *pAlarmer, char *pAlarmInfo, DWORD dwBufLen, void *pUser);//±¨¾¯»Øµ÷º¯Êı
-void SetMessageCallBack();//ÉèÖÃ±¨¾¯»Øµ÷º¯Êı
-void Whitelist();//°×Ãûµ¥±È¶Ô
-void Blacklist();//ºÚÃûµ¥±È¶Ô
-void SetupAlarm();//±¨¾¯²¼·À
-void CloseAlarm();//±¨¾¯³··À
-void OnExit(void);//ÍË³ö
+				  //å‡½æ•°å£°æ˜
+void Init();//åˆå§‹åŒ–
+void Demo_SDK_Version(); //è·å–sdkç‰ˆæœ¬
+void Connect();//è®¾ç½®è¿æ¥äº‹ä»¶ä¸é‡è¿æ—¶é—´
+void Htime();//è·å–æµ·åº·å¨è§†è®¾å¤‡æ—¶é—´
+bool Login(/*char *sDVRIP, short wDVRPort, char *sUserName, char *sPassword*/);//æ³¨å†Œæ‘„åƒæœºè®¾å¤‡
+void CALLBACK MSesGCallback(LONG ICommand, NET_DVR_ALARMER *pAlarmer, char *pAlarmInfo, DWORD dwBufLen, void *pUser);//æŠ¥è­¦å›è°ƒå‡½æ•°
+void SetMessageCallBack();//è®¾ç½®æŠ¥è­¦å›è°ƒå‡½æ•°
+void Whitelist();//ç™½åå•æ¯”å¯¹
+void Blacklist();//é»‘åå•æ¯”å¯¹
+void SetupAlarm();//æŠ¥è­¦å¸ƒé˜²
+void CloseAlarm();//æŠ¥è­¦æ’¤é˜²
+void OnExit(void);//é€€å‡º
 				  //---------------------------------------------------------------------------------------------------
-				  //º¯Êı¶¨Òå
-				  //³õÊ¼»¯
+				  //å‡½æ•°å®šä¹‰
+				  //åˆå§‹åŒ–
 void Init()
 {
-	//»ñÈ¡ÏµÍ³Ê±¼ä
+	//è·å–ç³»ç»Ÿæ—¶é—´
 	SYSTEMTIME sys;
 	GetLocalTime(&sys);
 	cout << sys.wYear << "-" << sys.wMonth << "-" << sys.wDay << " " << sys.wHour << ":" << sys.wMinute << ":" << sys.wSecond << endl;
 
 	
-	cout << "ÊäÈëÉè±¸IP:";
+	cout << "è¾“å…¥è®¾å¤‡IP:";
 	//cin >> sDVRIP; cout << endl;
-	cout << "ÊäÈëÉè±¸ÓÃ»§Ãû:";
+	cout << "è¾“å…¥è®¾å¤‡ç”¨æˆ·å:";
 	//cin >> sUserName; cout << endl;
-	cout << "ÊäÈëÉè±¸ÃÜÂë:";
+	cout << "è¾“å…¥è®¾å¤‡å¯†ç :";
 	/*
 	char c;
 	for (int i = 0; (c = _getch()) != '\r'; i++) {
@@ -77,7 +77,7 @@ void Init()
 	NET_DVR_INIT_CFG_ABILITY ablitty = {};
 	//NET_DVR_SetSDKInitCfg(ablitty.byRes, void*);
 
-	BOOL is = NET_DVR_Init();//³õÊ¼»¯
+	BOOL is = NET_DVR_Init();//åˆå§‹åŒ–
 	switch (is)
 	{
 	case NET_DVR_GETLOCALIPANDMACFAIL:
@@ -97,16 +97,16 @@ void Init()
 		break;
 	}
 	 
-	Demo_SDK_Version();//»ñÈ¡ SDK  µÄ°æ±¾ºÅºÍ build  ĞÅÏ¢	
+	Demo_SDK_Version();//è·å– SDK  çš„ç‰ˆæœ¬å·å’Œ build  ä¿¡æ¯	
 }
 
-//ÉèÖÃÁ¬½ÓÊÂ¼şÓëÖØÁ¬Ê±¼ä
+//è®¾ç½®è¿æ¥äº‹ä»¶ä¸é‡è¿æ—¶é—´
 void Connect()
 {
 	NET_DVR_SetConnectTime(2000, 1);
 	NET_DVR_SetReconnect(10000, true);
 }
-//»ñÈ¡º£¿µÍşÊÓÉè±¸Ê±¼ä
+//è·å–æµ·åº·å¨è§†è®¾å¤‡æ—¶é—´
 void Htime() {
 	BOOL iRet;
 	DWORD dwReturnLen;
@@ -117,21 +117,21 @@ void Htime() {
 	if (iRet!=0)
 	{
 		NET_DVR_SetLogToFile(3, logPath, false);
-		// error 3 ±íÊ¾SDKÎ´³õÊ¼»¯£¬NET_DVR_NOINIT
+		// error 3 è¡¨ç¤ºSDKæœªåˆå§‹åŒ–ï¼ŒNET_DVR_NOINIT
 		cout << "NET_DVR_GetDVRConfig NET_DVR_GET_TIMECFG  error: " << NET_DVR_GetLastError()<< "IRet:"<<iRet << endl;;
 		NET_DVR_Logout(IUserID);
 		NET_DVR_Cleanup();
 	}
-	printf("%dÄê%dÔÂ%dÈÕ%d:%d:%d\n", struParams.dwYear, struParams.dwMonth, struParams.dwDay, struParams.dwHour, struParams.dwMinute, struParams.dwSecond);
+	printf("%då¹´%dæœˆ%dæ—¥%d:%d:%d\n", struParams.dwYear, struParams.dwMonth, struParams.dwDay, struParams.dwHour, struParams.dwMinute, struParams.dwSecond);
 }
 
-//×¢²áÉãÏñ»úÉè±¸
+//æ³¨å†Œæ‘„åƒæœºè®¾å¤‡
 /*
 
 */
 bool Login(/*char *sDVRIP, short wDVRPort, char *sUserName, char *sPassword*/)
 {
-	//¼àÌı
+	//ç›‘å¬
 	IUserID = NET_DVR_Login_V30(sDVRIP, wDVRPort, sUserName, sPassword, &struDeviceInfo);
 
 	//NET_DVR_USER_LOGIN_INFO info = { 0 };
@@ -167,7 +167,7 @@ bool Login(/*char *sDVRIP, short wDVRPort, char *sUserName, char *sPassword*/)
 
 }
 
-//Demo_SDK_Version()º£¿µÍşÊÓsdk°æ±¾»ñÈ¡º¯Êı
+//Demo_SDK_Version()æµ·åº·å¨è§†sdkç‰ˆæœ¬è·å–å‡½æ•°
 void Demo_SDK_Version()
 {
 	unsigned int uiVersion = NET_DVR_GetSDKBuildVersion();
@@ -181,13 +181,13 @@ void Demo_SDK_Version()
 	printf(strTemp);
 }
 
-//¶¨ÒåÒì³£ÏûÏ¢»Øµ÷º¯Êı
+//å®šä¹‰å¼‚å¸¸æ¶ˆæ¯å›è°ƒå‡½æ•°
 void CALLBACK g_ExceptionCallBack(DWORD dwType, LONG lUserID, LONG lHandle, void *pUser)
 {
 	char tempbuf[256] = { 0 };
 	switch (dwType)
 	{
-	case EXCEPTION_RECONNECT:    //Ô¤ÀÀÊ±ÖØÁ¬  
+	case EXCEPTION_RECONNECT:    //é¢„è§ˆæ—¶é‡è¿  
 		printf("----------reconnect--------%d\n", time(NULL));
 		break;
 	default:
@@ -196,13 +196,13 @@ void CALLBACK g_ExceptionCallBack(DWORD dwType, LONG lUserID, LONG lHandle, void
 }
 
 
-//±¨¾¯»Øµ÷º¯Êı
+//æŠ¥è­¦å›è°ƒå‡½æ•°
 void CALLBACK MSesGCallback(LONG lCommand, NET_DVR_ALARMER *pAlarmer, char *pAlarmInfo, DWORD dwBufLen, void* pUser)
 {
 
-	ofstream oFile;//¶¨ÒåÎÄ¼şÊä³öÁ÷
-	oFile.open("³µÅÆºÅ.csv", ofstream::app);    //´ò¿ªÒªÊä³öµÄÎÄ¼ş 	
-											 //»ñÈ¡ÏµÍ³Ê±¼ä
+	ofstream oFile;//å®šä¹‰æ–‡ä»¶è¾“å‡ºæµ
+	oFile.open("è½¦ç‰Œå·.csv", ofstream::app);    //æ‰“å¼€è¦è¾“å‡ºçš„æ–‡ä»¶ 	
+											 //è·å–ç³»ç»Ÿæ—¶é—´
 	SYSTEMTIME sys;
 	GetLocalTime(&sys);
 	cout << sys.wYear << "-" << sys.wMonth << "-" << sys.wDay << " " << sys.wHour << ":" << sys.wMinute << ":" << sys.wSecond << endl;
@@ -210,17 +210,17 @@ void CALLBACK MSesGCallback(LONG lCommand, NET_DVR_ALARMER *pAlarmer, char *pAla
 	char filename[100];
 	FILE *fSnapPic = NULL;
 	FILE *fSnapPicPlate = NULL;
-	//ÒÔÏÂ´úÂë½ö¹©²Î¿¼£¬Êµ¼ÊÓ¦ÓÃÖĞ²»½¨ÒéÔÚ¸Ã»Øµ÷º¯ÊıÖĞÖ±½Ó´¦ÀíÊı¾İ±£´æÎÄ¼ş£¬
-	//ÀıÈç¿ÉÒÔÊ¹ÓÃÏûÏ¢µÄ·½Ê½(PostMessage)ÔÚÏûÏ¢ÏìÓ¦º¯ÊıÀï½øĞĞ´¦Àí¡£
+	//ä»¥ä¸‹ä»£ç ä»…ä¾›å‚è€ƒï¼Œå®é™…åº”ç”¨ä¸­ä¸å»ºè®®åœ¨è¯¥å›è°ƒå‡½æ•°ä¸­ç›´æ¥å¤„ç†æ•°æ®ä¿å­˜æ–‡ä»¶ï¼Œ
+	//ä¾‹å¦‚å¯ä»¥ä½¿ç”¨æ¶ˆæ¯çš„æ–¹å¼(PostMessage)åœ¨æ¶ˆæ¯å“åº”å‡½æ•°é‡Œè¿›è¡Œå¤„ç†ã€‚
 	switch (lCommand) {
-		//½»Í¨×¥ÅÄ½á¹û(ÀÏ±¨¾¯ÏûÏ¢)
+		//äº¤é€šæŠ“æ‹ç»“æœ(è€æŠ¥è­¦æ¶ˆæ¯)
 	case COMM_UPLOAD_PLATE_RESULT: {
 		NET_DVR_PLATE_RESULT struPlateResult = { 0 };
 		memcpy(&struPlateResult, pAlarmInfo, sizeof(struPlateResult));
-		printf("³µÅÆºÅ: %s\n", struPlateResult.struPlateInfo.sLicense);//³µÅÆºÅ		
-																	// oFile << struPlateResult.struPlateInfo.sLicense << endl;//±£´æ³µÅÆºÅµ½csvÎÄ¼ş		
-		oFile << struPlateResult.struPlateInfo.sLicense << "," << sys.wYear << "-" << sys.wMonth << "-" << sys.wDay << " " << sys.wHour << ":" << sys.wMinute << ":" << sys.wSecond << endl;//±£´æ³µÅÆºÅµ½csvÎÄ¼ş	
-																																															//³¡¾°Í¼
+		printf("è½¦ç‰Œå·: %s\n", struPlateResult.struPlateInfo.sLicense);//è½¦ç‰Œå·		
+																	// oFile << struPlateResult.struPlateInfo.sLicense << endl;//ä¿å­˜è½¦ç‰Œå·åˆ°csvæ–‡ä»¶		
+		oFile << struPlateResult.struPlateInfo.sLicense << "," << sys.wYear << "-" << sys.wMonth << "-" << sys.wDay << " " << sys.wHour << ":" << sys.wMinute << ":" << sys.wSecond << endl;//ä¿å­˜è½¦ç‰Œå·åˆ°csvæ–‡ä»¶	
+																																															//åœºæ™¯å›¾
 		if (struPlateResult.dwPicLen != 0 && struPlateResult.byResultType == 1)
 		{
 			sprintf(filename, "./pic/%s.jpg", struPlateResult.struPlateInfo.sLicense);
@@ -229,7 +229,7 @@ void CALLBACK MSesGCallback(LONG lCommand, NET_DVR_ALARMER *pAlarmer, char *pAla
 			iNum++;
 			fclose(fSnapPic);
 		}
-		//³µÅÆÍ¼
+		//è½¦ç‰Œå›¾
 		if (struPlateResult.dwPicPlateLen != 0 && struPlateResult.byResultType == 1)
 		{
 			sprintf(filename, "./pic/1/%s.jpg", struPlateResult.struPlateInfo.sLicense);
@@ -238,29 +238,29 @@ void CALLBACK MSesGCallback(LONG lCommand, NET_DVR_ALARMER *pAlarmer, char *pAla
 			iNum++;
 			fclose(fSnapPicPlate);
 		}
-		//ÆäËûĞÅÏ¢´¦Àí......
+		//å…¶ä»–ä¿¡æ¯å¤„ç†......
 		break;
 	}
-								   //½»Í¨×¥ÅÄ½á¹û(ĞÂ±¨¾¯ÏûÏ¢)
+								   //äº¤é€šæŠ“æ‹ç»“æœ(æ–°æŠ¥è­¦æ¶ˆæ¯)
 	case COMM_ITS_PLATE_RESULT: {
 		NET_ITS_PLATE_RESULT struITSPlateResult = { 0 };
 		memcpy(&struITSPlateResult, pAlarmInfo, sizeof(struITSPlateResult));
 		for (i = 0; i < struITSPlateResult.dwPicNum; i++)
 		{
-			printf("³µÅÆºÅ: %s\n", struITSPlateResult.struPlateInfo.sLicense);//³µÅÆºÅ
+			printf("è½¦ç‰Œå·: %s\n", struITSPlateResult.struPlateInfo.sLicense);//è½¦ç‰Œå·
 			carNum = struITSPlateResult.struPlateInfo.sLicense;
 			NET_DVR_SetLogToFile(3, logPath, false);
-			oFile << carNum << "," << sys.wYear << "-" << sys.wMonth << "-" << sys.wDay << " " << sys.wHour << ":" << sys.wMinute << ":" << sys.wSecond << endl;//±£´æ³µÅÆºÅµ½csvÎÄ¼ş	
+			oFile << carNum << "," << sys.wYear << "-" << sys.wMonth << "-" << sys.wDay << " " << sys.wHour << ":" << sys.wMinute << ":" << sys.wSecond << endl;//ä¿å­˜è½¦ç‰Œå·åˆ°csvæ–‡ä»¶	
 			if ((struITSPlateResult.struPicInfo[i].dwDataLen != 0) && (struITSPlateResult.struPicInfo[i].byType == 1) || (struITSPlateResult.struPicInfo[i].byType == 2))
 			{
-				//±£´æÍ¼Æ¬
+				//ä¿å­˜å›¾ç‰‡
 				sprintf(filename, "./pic/%s_%d.jpg", struITSPlateResult.struPlateInfo.sLicense, i);
 				fSnapPic = fopen(filename, "wb");
 				fwrite(struITSPlateResult.struPicInfo[i].pBuffer, struITSPlateResult.struPicInfo[i].dwDataLen, 1, fSnapPic);
 				iNum++;
 				fclose(fSnapPic);
 			}
-			//³µÅÆĞ¡Í¼Æ¬
+			//è½¦ç‰Œå°å›¾ç‰‡
 			if ((struITSPlateResult.struPicInfo[i].dwDataLen != 0) && (struITSPlateResult.struPicInfo[i].byType == 0))
 			{
 				sprintf(filename, "./pic/1/%s_%d.jpg", struITSPlateResult.struPlateInfo.sLicense, i);
@@ -270,10 +270,10 @@ void CALLBACK MSesGCallback(LONG lCommand, NET_DVR_ALARMER *pAlarmer, char *pAla
 				iNum++;
 				fclose(fSnapPicPlate);
 			}
-			//ÆäËûĞÅÏ¢´¦Àí......
+			//å…¶ä»–ä¿¡æ¯å¤„ç†......
 		}
-		//Whitelist();//°×Ãûµ¥±È¶Ô
-		//Blacklist();//ºÚÃûµ¥±È¶Ô
+		//Whitelist();//ç™½åå•æ¯”å¯¹
+		//Blacklist();//é»‘åå•æ¯”å¯¹
 		break;
 	}
 	default: {
@@ -281,11 +281,11 @@ void CALLBACK MSesGCallback(LONG lCommand, NET_DVR_ALARMER *pAlarmer, char *pAla
 		break;
 	}
 	}
-	oFile.close();//¹Ø±ÕÎÄ¼ş
+	oFile.close();//å…³é—­æ–‡ä»¶
 	return;
 }
 
-//ÉèÖÃ±¨¾¯»Øµ÷º¯Êı
+//è®¾ç½®æŠ¥è­¦å›è°ƒå‡½æ•°
 void SetMessageCallBack()
 {
 	NET_DVR_SetDVRMessageCallBack_V30(MSesGCallback, NULL);
@@ -293,81 +293,81 @@ void SetMessageCallBack()
 
 
 /*
-ÒªÊ¹ PC ÄÜ¹»ÊÕµ½Éè±¸Ö÷¶¯·¢¹ıÀ´µÄ±¨¾¯µÈĞÅÏ¢£¬±ØĞë½«Éè±¸µÄÍøÂçÅäÖÃÖĞµÄÔ¶³Ì±¨¾¯Ö÷»úµØ
-Ö·(struAlarmHostIpAddr)ÉèÖÃ³É PC »úµÄ IP µØÖ·£¨Óë½Ó¿ÚÖĞµÄ sLocalIP ²ÎÊıÒ»ÖÂ£©£¬
-Ô¶³Ì±¨¾¯Ö÷ »ú¶Ë¿ÚºÅ(wAlarmHostIpPort)ÉèÖÃ³É PC »úµÄ¼àÌı¶Ë¿ÚºÅ£¨Óë½Ó¿ÚÖĞµÄ wLocalPort ²ÎÊıÒ»ÖÂ£©¡£
+è¦ä½¿ PC èƒ½å¤Ÿæ”¶åˆ°è®¾å¤‡ä¸»åŠ¨å‘è¿‡æ¥çš„æŠ¥è­¦ç­‰ä¿¡æ¯ï¼Œå¿…é¡»å°†è®¾å¤‡çš„ç½‘ç»œé…ç½®ä¸­çš„è¿œç¨‹æŠ¥è­¦ä¸»æœºåœ°
+å€(struAlarmHostIpAddr)è®¾ç½®æˆ PC æœºçš„ IP åœ°å€ï¼ˆä¸æ¥å£ä¸­çš„ sLocalIP å‚æ•°ä¸€è‡´ï¼‰ï¼Œ
+è¿œç¨‹æŠ¥è­¦ä¸» æœºç«¯å£å·(wAlarmHostIpPort)è®¾ç½®æˆ PC æœºçš„ç›‘å¬ç«¯å£å·ï¼ˆä¸æ¥å£ä¸­çš„ wLocalPort å‚æ•°ä¸€è‡´ï¼‰ã€‚
 */
-//±¨¾¯²¼·À
+//æŠ¥è­¦å¸ƒé˜²
 void SetupAlarm()
 {
-	//Æô¶¯²¼·À
+	//å¯åŠ¨å¸ƒé˜²
 	NET_DVR_SETUPALARM_PARAM struSetupParam = { 0 };
 	struSetupParam.dwSize = sizeof(NET_DVR_SETUPALARM_PARAM);
-	struSetupParam.byAlarmInfoType = 1;//ÉÏ´«±¨¾¯ĞÅÏ¢ÀàĞÍ£º0-ÀÏ±¨¾¯ĞÅÏ¢(NET_DVR_PLATE_RESULT), 1-ĞÂ±¨¾¯ĞÅÏ¢(NET_ITS_PLATE_RESULT)
-	struSetupParam.byLevel = 1;//²¼·ÀÓÅÏÈ¼¶£º0- Ò»µÈ¼¶£¨¸ß£©£¬1- ¶şµÈ¼¶£¨ÖĞ£©£¬2- ÈıµÈ¼¶£¨µÍ£©
-							   //bySupport °´Î»±íÊ¾£¬Öµ£º0 - ÉÏ´«£¬1 - ²»ÉÏ´«;  bit0 - ±íÊ¾¶ş¼¶²¼·ÀÊÇ·ñÉÏ´«Í¼Æ¬;
+	struSetupParam.byAlarmInfoType = 1;//ä¸Šä¼ æŠ¥è­¦ä¿¡æ¯ç±»å‹ï¼š0-è€æŠ¥è­¦ä¿¡æ¯(NET_DVR_PLATE_RESULT), 1-æ–°æŠ¥è­¦ä¿¡æ¯(NET_ITS_PLATE_RESULT)
+	struSetupParam.byLevel = 1;//å¸ƒé˜²ä¼˜å…ˆçº§ï¼š0- ä¸€ç­‰çº§ï¼ˆé«˜ï¼‰ï¼Œ1- äºŒç­‰çº§ï¼ˆä¸­ï¼‰ï¼Œ2- ä¸‰ç­‰çº§ï¼ˆä½ï¼‰
+							   //bySupport æŒ‰ä½è¡¨ç¤ºï¼Œå€¼ï¼š0 - ä¸Šä¼ ï¼Œ1 - ä¸ä¸Šä¼ ;  bit0 - è¡¨ç¤ºäºŒçº§å¸ƒé˜²æ˜¯å¦ä¸Šä¼ å›¾ç‰‡;
 
-	IHandle = NET_DVR_SetupAlarmChan_V41(IUserID, &struSetupParam);//½¨Á¢±¨¾¯ÉÏ´«Í¨µÀ£¬»ñÈ¡±¨¾¯µÈĞÅÏ¢¡£
+	IHandle = NET_DVR_SetupAlarmChan_V41(IUserID, &struSetupParam);//å»ºç«‹æŠ¥è­¦ä¸Šä¼ é€šé“ï¼Œè·å–æŠ¥è­¦ç­‰ä¿¡æ¯ã€‚
 	if (IHandle < 0)
 	{
-		std::cout << "NET_DVR_SetupAlarmChan_V41 Failed! Error number£º" << NET_DVR_GetLastError() << std::endl;
+		std::cout << "NET_DVR_SetupAlarmChan_V41 Failed! Error numberï¼š" << NET_DVR_GetLastError() << std::endl;
 		NET_DVR_Logout(IUserID);
 		NET_DVR_Cleanup();
 		return;
 	}
 	std::cout << "\n" << endl;
 }
-//±¨¾¯³··À
+//æŠ¥è­¦æ’¤é˜²
 void CloseAlarm()
 {
-	//³·Ïú²¼·ÀÉÏ´«Í¨µÀ
-	if (!NET_DVR_CloseAlarmChan_V30(IHandle))//²¼·À¾ä±úIHandle
+	//æ’¤é”€å¸ƒé˜²ä¸Šä¼ é€šé“
+	if (!NET_DVR_CloseAlarmChan_V30(IHandle))//å¸ƒé˜²å¥æŸ„IHandle
 	{
-		std::cout << "NET_DVR_CloseAlarmChan_V30 Failed! Error number£º" << NET_DVR_GetLastError() << std::endl;
+		std::cout << "NET_DVR_CloseAlarmChan_V30 Failed! Error numberï¼š" << NET_DVR_GetLastError() << std::endl;
 		NET_DVR_Logout(IUserID);
 		NET_DVR_Cleanup();
 		return;
 	}
-	IHandle = -1;//²¼·À¾ä±ú;
+	IHandle = -1;//å¸ƒé˜²å¥æŸ„;
 }
-//ÍË³ö
+//é€€å‡º
 void OnExit(void)
 {
 	std::cout << "Begin exit..." << std::endl;
-	//±¨¾¯³··À
+	//æŠ¥è­¦æ’¤é˜²
 	CloseAlarm();
-	//ÊÍ·ÅÏà»ú
-	NET_DVR_Logout(IUserID);//×¢ÏúÓÃ»§
-	NET_DVR_Cleanup();//ÊÍ·ÅSDK×ÊÔ´	
+	//é‡Šæ”¾ç›¸æœº
+	NET_DVR_Logout(IUserID);//æ³¨é”€ç”¨æˆ·
+	NET_DVR_Cleanup();//é‡Šæ”¾SDKèµ„æº	
 }
-//°×Ãûµ¥±È¶Ô
+//ç™½åå•æ¯”å¯¹
 void Whitelist() {
 
 	ifstream iFile;
-	iFile.open("°×Ãûµ¥.csv", ios::in);
+	iFile.open("ç™½åå•.csv", ios::in);
 	if (!iFile.is_open())
-		std::cout << "ÕÒ²»µ½ÎÄ¼ş";
+		std::cout << "æ‰¾ä¸åˆ°æ–‡ä»¶";
 	while (getline(iFile, LineByLine))
 	{
 		if (LineByLine.empty()) {
 			continue;
 		}
 		else {
-			size_t found = LineByLine.find(carNum.substr(4, 8));//carNum.substr(4, 8) ½ØÈ¡³µÅÆºÅ¡°À¶ĞÂNF8202¡±ÎªNF8202
+			size_t found = LineByLine.find(carNum.substr(4, 8));//carNum.substr(4, 8) æˆªå–è½¦ç‰Œå·â€œè“æ–°NF8202â€ä¸ºNF8202
 			if (found != std::string::npos) {
-				std::cout << "°×Ãûµ¥:" << LineByLine << '\n';
+				std::cout << "ç™½åå•:" << LineByLine << '\n';
 			}
 
 		}
 	}
-	iFile.close();//¹Ø±ÕÎÄ¼ş
+	iFile.close();//å…³é—­æ–‡ä»¶
 }
 
-//ºÚÃûµ¥±È¶Ô
+//é»‘åå•æ¯”å¯¹
 void Blacklist() {
 
 	ifstream iFile;
-	iFile.open("ºÚÃûµ¥.csv", ios::in);
+	iFile.open("é»‘åå•.csv", ios::in);
 	if (!iFile.is_open())
 		std::cout << "Not Found The File black.csv";
 
@@ -377,31 +377,31 @@ void Blacklist() {
 			continue;
 		}
 		else {
-			size_t found = LineByLine.find(carNum.substr(4, 8));//carNum.substr(4, 8) ½ØÈ¡³µÅÆºÅ¡°À¶ĞÂNF8202¡±ÎªNF8202
+			size_t found = LineByLine.find(carNum.substr(4, 8));//carNum.substr(4, 8) æˆªå–è½¦ç‰Œå·â€œè“æ–°NF8202â€ä¸ºNF8202
 			if (found != std::string::npos) {
-				std::cout << "ºÚÃûµ¥:" << LineByLine << '\n';
+				std::cout << "é»‘åå•:" << LineByLine << '\n';
 			}
 
 		}
 	}
-	iFile.close();//¹Ø±ÕÎÄ¼ş
+	iFile.close();//å…³é—­æ–‡ä»¶
 }
 
 int main()
 {
-	Init();//³õÊ¼»¯sdk
-	Connect();//ÉèÖÃÁ¬½ÓÊÂ¼şÓëÖØÁ¬Ê±¼ä			  	
-	Login(/*sDVRIP, wDVRPort, sUserName, sPassword*/);	//×¢²áÉè±¸
-	//Htime(); //»ñÈ¡º£¿µÍşÊÓÉè±¸Ê±¼ä
-	SetupAlarm();//²¼·À£¬´Ë´¦Ó¦¸ÃÊÇÒ»¼¶²¼·À
-	SetMessageCallBack();	//×¢²á±¨¾¯»Øµ÷º¯Êı 
+	Init();//åˆå§‹åŒ–sdk
+	Connect();//è®¾ç½®è¿æ¥äº‹ä»¶ä¸é‡è¿æ—¶é—´			  	
+	Login(/*sDVRIP, wDVRPort, sUserName, sPassword*/);	//æ³¨å†Œè®¾å¤‡
+	//Htime(); //è·å–æµ·åº·å¨è§†è®¾å¤‡æ—¶é—´
+	SetupAlarm();//å¸ƒé˜²ï¼Œæ­¤å¤„åº”è¯¥æ˜¯ä¸€çº§å¸ƒé˜²
+	SetMessageCallBack();	//æ³¨å†ŒæŠ¥è­¦å›è°ƒå‡½æ•° 
 
 	while(1) {
-		SetMessageCallBack();	//±¨¾¯»Øµ÷º¯Êı 				
+		SetMessageCallBack();	//æŠ¥è­¦å›è°ƒå‡½æ•° 				
 		Sleep(500);
 	}
 	Sleep(-1);
-	atexit(OnExit);//ÍË³ö
+	atexit(OnExit);//é€€å‡º
 	return 0;
 
 }
